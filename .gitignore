@@ -43,3 +43,8 @@ graphify-out/
 # --- AI provider secrets / local scratch ---
 *.local
 .worktrees/
+
+# --- EV Charge Tracker ---
+src/backend/data/
+src/backend/ev-charge-tracker
+src/frontend/tsconfig.tsbuildinfo

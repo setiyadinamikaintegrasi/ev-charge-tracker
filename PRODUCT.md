@@ -1,102 +1,78 @@
 # PRODUCT.md
 
-**Status:** Template baseline — adapt to your project.
-
-`PRODUCT.md` defines **why** this product exists. It is the highest-level source of truth after security/legal/compliance requirements and approved business requirements.
+**Status:** Approved baseline.
 
 ## Product vision
 
-A reusable, stack-agnostic GitHub template that lets teams and AI coding agents ship AI-native applications to a consistent, governed, production-grade standard — without locking in a language, framework, or platform.
+Aplikasi pencatatan sesi charging mobil listrik (EV) yang membantu pemilik EV melacak biaya energi, pola pengisian, dan efisiensi biaya per kilometer.
 
 ## Business problem
 
-Teams building AI-native applications repeatedly reinvent governance: documentation discipline, agent operating rules, quality gates, security controls, supply-chain protections, AI evaluation, CI/CD, observability, and rollback. Without a shared baseline, quality and security drift, AI agents make speculative changes, and production deployments lack human control.
+Pemilik mobil listrik tidak punya cara terpusat untuk mencatat sesi charging. Data tersebar di struk SPKLU, aplikasi berbeda-beda (PLN, Tesla, BYD, dll), dan tidak ada cara untuk menghitung total biaya energi per bulan atau efisiensi Rp/km.
 
 ## Target users
 
-- Engineering teams starting a new AI-native application.
-- AI coding agents (Claude Code, Copilot, Cursor, Codex) operating on the codebase.
-- Platform/security engineers enforcing organizational standards.
-- Technical leads accountable for production readiness and auditability.
+- Pemilik mobil listrik pribadi yang rutin charging di SPKLU atau home charging.
+- Driver fleet EV yang perlu melaporkan biaya operasional.
 
 ## Stakeholder groups
 
-- Product owners (business outcomes).
-- Engineering (delivery).
-- Security and compliance (risk).
-- Operations/SRE (reliability).
-- AI/ML evaluation (model behavior and cost).
+- User (pemilik EV): input data charging, lihat statistik.
+- Developer (Pak Joko): maintenance, feature development.
 
 ## User needs
 
-- "I can start a new AI-native project with governance already in place."
-- "My AI coding agent understands its boundaries and follows a disciplined workflow."
-- "Pull requests receive deterministic checks plus AI-assisted review."
-- "Production deployments are human-gated and reversible."
-- "AI behavior is evaluated before release."
+- "Saya bisa mencatat setiap sesi charging dengan cepat (lokasi, kWh, biaya, waktu)."
+- "Saya bisa melihat total biaya energi per bulan/tahun."
+- "Saya bisa melihat efisiensi: Rp per kWh dan Rp per km."
+- "Saya bisa melihat riwayat charging dan pola pengisian saya."
 
 ## Primary journeys
 
-1. **Start a project** — use the template → adopt a stack → wire CI → first deploy to dev.
-2. **Ship a feature** — design doc → PR → quality + security + AI gates → review → merge → dev deploy → staging → production (human-gated).
-3. **Evaluate AI behavior** — add prompt/eval → run regression + safety evals → gate release.
-4. **Recover** — detect incident → runbook → rollback → postmortem.
+1. **Catat charging** — buka app → input lokasi, kWh, biaya, odometer → simpan.
+2. **Lihat statistik** — dashboard → total biaya bulan ini, rata-rata Rp/kWh, grafik tren.
+3. **Riwayat** — list semua sesi charging dengan filter bulan/lokasi.
 
 ## Business value
 
-- Faster, safer starts for AI-native projects.
-- Reduced security and supply-chain risk.
-- Consistent, auditable engineering standards across teams.
-- Controlled, human-gated production changes.
-- Measurable AI quality and cost.
+- Visibilitas biaya energi EV yang sebenarnya.
+- Data untuk decision making: home charging vs SPKLU.
+- Riwayat untuk laporan fleet/operasional.
 
 ## Product principles
 
-- Business-first engineering.
-- Document-driven development.
-- Design before implementation.
-- Small-context, reversible increments.
-- Evidence before completion.
-- Human-controlled production.
-- Simplicity first; surgical changes; goal-driven execution.
+- Simpel dan cepat — input charging < 30 detik.
+- Mobile-first — dipakai saat di SPKLU.
+- Data lokal — tidak butuh cloud untuk fungsi dasar.
 
 ## Success metrics
 
-- Time from "use template" to first dev deploy.
-- PR check coverage (deterministic + AI-assisted).
-- Critical/high security findings in `main`: zero.
-- AI evaluation pass rate on release.
-- Mean time to recover (MTTR) from incidents.
-- Committed secrets: zero.
+- Input sesi charging < 30 detik.
+- Dashboard load < 1 detik.
+- Zero data loss.
 
 ## Scope
 
-- Governance, documentation, agent instructions, CI/CD workflows, security controls, AI scaffolding, observability guidance, operational readiness docs.
+- CRUD sesi charging (lokasi, tanggal, kWh, biaya, odometer).
+- Dashboard statistik (total, rata-rata, tren).
+- Filter riwayat per bulan/lokasi.
+- Export data (CSV).
 
 ## Out of scope
 
-- A committed language/framework/runtime.
-- A concrete deployment target (AWS/GCP/K8s) with working deploy steps.
-- A working model-provider adapter (skeleton only; consumer wires the endpoint).
-- DAST, performance-test, canary, and DR-validation automation (deferred; need a target).
-
-## Roadmap
-
-- **Phase 1** — Repository governance (baseline complete).
-- **Phase 2** — Code-quality baseline (baseline complete).
-- **Phase 3** — Security baseline (baseline complete).
-- **Phase 4** — AI-native capability (baseline complete; consumer evaluation remains advisory).
-- **Phase 5** — Delivery pipeline (baseline complete; deploy and smoke workflows remain skeletons).
-- **Phase 6** — Production readiness (baseline complete; consumer platform activation remains deferred).
+- Integrasi API provider charging (PLN, Tesla, dll).
+- Multi-user/auth (single user untuk MVP).
+- Real-time monitoring charging.
+- Notifikasi.
 
 ## Assumptions
 
-See [docs/assumptions.md](docs/assumptions.md) and the spec's assumptions section. Key: stack-agnostic (no tooling runs until a stack is wired); no real deployment target; AI-eval is a skeleton; branch protection is applied by the consumer via `scripts/setup-branch-protection.sh`.
+- Single user, no auth needed for MVP.
+- Mata uang: IDR (Rupiah).
+- Satuan: kWh untuk energi, km untuk jarak.
 
 ## Constraints
 
-- No language/framework committed.
-- MIT license for the template.
-- No production target.
-- All Make targets no-op cleanly until a stack is wired.
-- Workflows follow least-privilege, SHA-pinned-Actions security rules.
+- Mobile-responsive wajib.
+- Berjalan di Mac Mini M4 (development).
+- SQLite untuk kesederhanaan (no external DB server).

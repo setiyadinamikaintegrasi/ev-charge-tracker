@@ -5,7 +5,8 @@ STACK := $(shell sh scripts/detect-stack.sh)
         test test-unit test-contract test-integration test-e2e test-coverage \
         eval eval-regression eval-safety \
         security secret-scan dependency-scan container-scan iac-scan \
-        build run smoke-test docs-check readiness-check ci test-scripts
+        build run smoke-test docs-check readiness-check ci test-scripts \
+        ev-build ev-run ev-dev ev-frontend-dev ev-clean
 
 # When no stack is detected, targets that need a toolchain no-op cleanly.
 ifeq ($(STACK),unknown)
@@ -69,3 +70,31 @@ test-scripts:
 	@sh scripts/test/test-prompt-eval-assets.sh
 ci: format-check lint docs-check readiness-check test-scripts
 	@echo "[ci] local gate (best-effort) complete"
+
+# ---------------------------------------------------------------------------
+# EV Charge Tracker targets (Go + Echo + SQLite backend, React + Vite frontend)
+# These run regardless of stack detection: go.mod lives at src/backend/.
+# ---------------------------------------------------------------------------
+
+# Build frontend (npm run build) then backend (CGO_ENABLED=0) → single binary.
+ev-build:
+	@sh scripts/build-ev.sh
+
+# Build everything, then run the server on http://localhost:8100.
+ev-run:
+	@sh scripts/build-ev.sh run
+
+# Run both frontend (:5174) and backend (:8100) dev servers concurrently.
+ev-dev:
+	@echo "Starting backend on :8100 and frontend on :5174…"
+	@cd src/backend && go run . &
+	@cd src/frontend && npm run dev
+
+# Frontend dev server only (proxies /api → :8100).
+ev-frontend-dev:
+	@cd src/frontend && npm run dev
+
+# Remove build artifacts (binary + frontend dist + sqlite data).
+ev-clean:
+	@rm -rf src/backend/ev-charge-tracker src/frontend/dist src/backend/data
+	@echo "EV build artifacts cleaned."
